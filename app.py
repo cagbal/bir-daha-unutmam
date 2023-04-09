@@ -75,7 +75,7 @@ class NoteFinder:
             messages=[
                 {"role": "system", "content": "Sen doküman asistanısın. Dokümanı oku ve soruları cevapla. Sadece dokümanla ilgili soruları cevapla."},
                 {"role": "user", "content": document},
-                {"role": "assistant", "content": "İşte doküman."},
+                {"role": "assistant", "content": "Ben bir doküman asistanıyım. Yukarıdaki dokümanı okuyup ve sorularınızı cevaplayacağım. Sadece dokümanla ilgili sorularınıza cevap verebilirim, başka sorulara kesinlikle dokümanda yok diye cevap veririm."},
                 {"role": "user", "content": question},
             ],
         )
