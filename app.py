@@ -83,11 +83,11 @@ class NoteFinder:
         return answer
 
     def run(self, args):
-        if args.file:
-            if args.file.lower() == "hepsi":
+        if args.dosya:
+            if args.dosya.lower() == "hepsi":
                 self.update_all_embeddings()
             else:
-                self.update_embedding(args.file)
+                self.update_embedding(args.dosya)
         else:
             note_dates, note_embeddings = self.load_embeddings_from_redis()
 
