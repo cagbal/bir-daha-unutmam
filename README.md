@@ -71,3 +71,9 @@ python app.py --dosya hepsi
 Biraz değiştirilmiş DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
 
 Diğer kütüphanelerin lisanslarını incelemeniz gerekebilir. Ona karışmam.
+
+## Teşekkür 
+
+GPT-4 ve arkadaşları ben neredeyse hiç kod yazmadım. 
+
+![Kodun yazılışı](resimler/gpt4-kod-yaz.png)
