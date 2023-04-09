@@ -22,6 +22,9 @@ Terminalde aşağıdaki komutu çalıştırarak ortam değişkenini ayarlayın (
 export OPENAI_API_KEY='api_anaharınız'
 ```
 
+## Diagram 
+![Diagram](resimler/diagram.png)
+
 ## Kurulum
 
 Öncelikle, bu projeyi klonlayın ve projenin ana dizinine gidin:
