@@ -2,6 +2,10 @@
 
 Bir-Daha-Unutmam, notlarınızı kategorize etmenize yardımcı olan, OpenAI GPT-4 modelleri ve Redis kullanarak notlarınızdaki benzerliklere göre otomatik sınıflandırma yapan bir Python uygulamasıdır.
 
+## Demo
+
+![Demo](resimler/demo.gif)
+
 ## Kurulum
 
 Öncelikle, bu projeyi klonlayın ve projenin ana dizinine gidin:
