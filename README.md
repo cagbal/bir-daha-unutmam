@@ -68,4 +68,6 @@ python app.py --dosya hepsi
 ```
 
 ## Lisans
-Bu proje MIT lisansı altındadır.
+Biraz değiştirilmiş DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+
+Diğer kütüphanelerin lisanslarını incelemeniz gerekebilir. Ona karışmam.
