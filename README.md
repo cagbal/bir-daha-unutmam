@@ -7,7 +7,7 @@ Bir-Daha-Unutmam, notlarınızı kategorize etmenize yardımcı olan, OpenAI GPT
 Öncelikle, bu projeyi klonlayın ve projenin ana dizinine gidin:
 
 ```bash
-git clone https://github.com/yourusername/bir-daha-unutmam.git
+git clone https://github.com/cagbal/bir-daha-unutmam
 cd bir-daha-unutmam
 ```
 
