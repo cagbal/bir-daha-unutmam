@@ -77,6 +77,8 @@ Diğer kütüphanelerin lisanslarını incelemeniz gerekebilir. Ona karışmam.
 
 ## Teşekkür 
 
+Discord'daki bir tartışmadan yola çıkarak yaptım. Arkadaş ismini vermek ister mi? bilemediğim için isim vermiyorum.
+
 GPT-4 ve arkadaşları ben neredeyse hiç kod yazmadım. 
 
 ![Kodun yazılışı](resimler/gpt4-kod-yaz.png)
