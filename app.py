@@ -172,15 +172,17 @@ def main():
             send_button.click(send_to_redis, inputs=[dropdown], outputs=[send_result])
 
             gr.Markdown("## Not Ekle, Yükle ve Düzenle")
-
             note_dropdown = gr.inputs.Dropdown(choices=list(note_finder.notes.keys()), label="Notlar")
             load_button = gr.Button(value="Yükle", label="Not Yükle")
             save_button = gr.Button(value="Kaydet", label="Not Kaydet")
+            update_button = gr.Button(value="Güncelle", label="Not Güncelle")
             note_filename = gr.inputs.Textbox(label="Dosya Adı (Yeni Not İçin)")
 
             note_content = gr.inputs.Textbox(lines=10, label="Not İçeriği")
-            loaded_note = gr.outputs.Textbox(label="Yüklenen Not")
             save_result = gr.outputs.Textbox(label="Sonuç")
+
+            def refresh_dropdown():
+                note_dropdown.choices = list(note_finder.notes.keys())
 
             def load_note(note_name):
                 content = note_finder.notes.get(note_name, "")
@@ -200,11 +202,27 @@ def main():
                 # Update the embedding
                 note_finder.update_embedding(filename)
 
+                # Refresh the dropdown menu
+                refresh_dropdown()
 
-                return gr.Dropdown.update(choices=list(note_finder.notes.keys())), gr.Dropdown.update(choices=list(note_finder.notes.keys())), f"{filename} notu kaydedildi."
+                return "Not başarıyla kaydedildi."
 
-            load_button.click(load_note, inputs=[note_dropdown], outputs=[loaded_note])
-            save_button.click(save_note, inputs=[note_filename, note_content], outputs=[note_dropdown, dropdown, save_result])
+            def update_note(note_name, content):
+                # Save edited note to file
+                with open(os.path.join(folder, note_name), 'w') as f:
+                    f.write(content)
+
+                # Update note in notes dictionary
+                note_finder.notes[note_name] = content
+
+                # Update the embedding
+                note_finder.update_embedding(note_name)
+
+                return "Not başarıyla güncellendi."
+
+            load_button.click(load_note, inputs=[note_dropdown], outputs=[note_content])
+            save_button.click(save_note, inputs=[note_filename, note_content], outputs=[save_result])
+            update_button.click(update_note, inputs=[note_dropdown, note_content], outputs=[save_result])
 
         if __name__ == "__main__":
             demo.launch()
