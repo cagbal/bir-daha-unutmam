@@ -108,7 +108,6 @@ class NoteFinder:
                 print(f"Cevap: {answer}")
 
 
-
 # Import Gradio if it's available
 try:
     import gradio as gr
@@ -146,6 +145,15 @@ def main():
                 note_finder.update_embedding(filename)
                 return f"{filename} Redis'e eklendi."
 
+        def save_note(filename, content):
+            with open(os.path.join(note_finder.folder, filename), "w") as f:
+                f.write(content)
+            note_finder.notes[filename] = content
+            return f"{filename} notu kaydedildi."
+
+        def load_note(filename):
+            return note_finder.notes.get(filename, "")
+
         note_files = ["hepsi"] + sorted(list(note_finder.notes.keys()))
 
         with gr.Blocks() as demo:
@@ -163,13 +171,45 @@ def main():
             send_result = gr.outputs.Textbox(label="Sonuç")
             send_button.click(send_to_redis, inputs=[dropdown], outputs=[send_result])
 
-        demo.launch()
+            gr.Markdown("## Not Ekle, Yükle ve Düzenle")
+
+            note_dropdown = gr.inputs.Dropdown(choices=list(note_finder.notes.keys()), label="Notlar")
+            load_button = gr.Button(value="Yükle", label="Not Yükle")
+            save_button = gr.Button(value="Kaydet", label="Not Kaydet")
+            note_filename = gr.inputs.Textbox(label="Dosya Adı (Yeni Not İçin)")
+
+            note_content = gr.inputs.Textbox(lines=10, label="Not İçeriği")
+            loaded_note = gr.outputs.Textbox(label="Yüklenen Not")
+            save_result = gr.outputs.Textbox(label="Sonuç")
+
+            def load_note(note_name):
+                content = note_finder.notes.get(note_name, "")
+                return content
+
+            def save_note(filename, content):
+                if not filename.endswith(".md"):
+                    filename += ".md"
+
+                # Save note to file
+                with open(os.path.join(folder, filename), 'w') as f:
+                    f.write(content)
+
+                # Add note to notes dictionary
+                note_finder.notes[filename] = content
+
+                # Update the embedding
+                note_finder.update_embedding(filename)
+
+
+                return gr.Dropdown.update(choices=list(note_finder.notes.keys())), gr.Dropdown.update(choices=list(note_finder.notes.keys())), f"{filename} notu kaydedildi."
+
+            load_button.click(load_note, inputs=[note_dropdown], outputs=[loaded_note])
+            save_button.click(save_note, inputs=[note_filename, note_content], outputs=[note_dropdown, dropdown, save_result])
+
+        if __name__ == "__main__":
+            demo.launch()
     else:
-        if args.dosya:
-            note_finder.run(args)
-        else:
-            print("Gradio is not installed or not enabled. Please install Gradio and use --gradio flag to enable the interface.")
-            return
+        note_finder.run(args)
 
 if __name__ == "__main__":
     main()
