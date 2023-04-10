@@ -69,13 +69,14 @@ class NoteFinder:
             else:
                 print(f"Doküman boş {filename}. Atlandı.")
     
-    def chat_gpt(self, document, question):
+    def chat_gpt(self, document, question, date=""):
+        print("Tarih: ", date)
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "Sen doküman asistanısın. Dokümanı oku ve soruları cevapla. Sadece dokümanla ilgili soruları cevapla."},
-                {"role": "user", "content": document},
-                {"role": "assistant", "content": "Ben bir doküman asistanıyım. Yukarıdaki dokümanı okuyup ve sorularınızı cevaplayacağım. Sadece dokümanla ilgili sorularınıza cevap verebilirim, başka sorulara kesinlikle dokümanda yok diye cevap veririm."},
+                {"role": "system", "content": "Sen günlük asistanısın. Günlüğü oku ve soruları cevapla. Sadece günlükle ilgili soruları cevapla. Bu bir günlük olduğu için aksi belirtilmedikçe olayların tarihleri günlüğün tarihine göre geçerlidir."},
+                {"role": "user", "content": f"Günlük içeriği: {document}\n\n--------\n\Günlük tarihi: {date}" },
+                {"role": "assistant", "content": "Ben bir Günlük asistanıyım. Yukarıdaki günlük içeriğini ve tarihini okuyup, sorularınızı cevaplayacağım. Sadece günlükle ve günlüğün tarihi ile ilgili sorularınıza cevap verebilirim, başka sorulara kesinlikle dokümanda yok diye cevap veririm."},
                 {"role": "user", "content": question},
             ],
         )
@@ -104,7 +105,7 @@ class NoteFinder:
                 
                 # Get the answer from the document using ChatGPT API
                 document = self.notes[note_dates[index]]
-                answer = self.chat_gpt(document, text)
+                answer = self.chat_gpt(document, text, note_dates[index])
                 print(f"Cevap: {answer}")
 
 
@@ -134,7 +135,7 @@ def main():
             query_embedding = note_finder.get_embeddings([text])[0]
             index = note_finder.find_closest(query_embedding, note_embeddings)
             document = note_finder.notes[note_dates[index]]
-            answer = note_finder.chat_gpt(document, text)
+            answer = note_finder.chat_gpt(document, text, note_dates[index])
             return f"En yakın not: {note_dates[index]}\nCevap: {answer}"
 
         def send_to_redis(filename):
