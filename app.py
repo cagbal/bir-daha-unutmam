@@ -109,18 +109,67 @@ class NoteFinder:
 
 
 
+# Import Gradio if it's available
+try:
+    import gradio as gr
+    gradio_available = True
+except ImportError:
+    gradio_available = False
+
+# NoteFinder class and other functions remain unchanged
+
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Notlarını bul")
-    parser.add_argument("--dosya", type=str, help="Verisetine yeni bir not eklemek için dosya adını girin.")
+    parser.add_argument("--dosya", type=str, help="Verisetine yeni bir not eklemek için dosya adını girin.", default=None)
+    parser.add_argument("--gradio", action="store_true", help="Gradio arayüzünü kullanarak notlara ulaşın.")
     return parser.parse_args()
-
 
 def main():
     folder = "notlar"
     note_finder = NoteFinder(folder)
     args = parse_arguments()
-    note_finder.run(args)
+    
+    if args.gradio and gradio_available:
+        def ask_question(text):
+            note_dates, note_embeddings = note_finder.load_embeddings_from_redis()
+            query_embedding = note_finder.get_embeddings([text])[0]
+            index = note_finder.find_closest(query_embedding, note_embeddings)
+            document = note_finder.notes[note_dates[index]]
+            answer = note_finder.chat_gpt(document, text)
+            return f"En yakın not: {note_dates[index]}\nCevap: {answer}"
 
+        def send_to_redis(filename):
+            if filename == "hepsi":
+                note_finder.update_all_embeddings()
+                return "Tüm notlar Redis'e eklendi."
+            else:
+                note_finder.update_embedding(filename)
+                return f"{filename} Redis'e eklendi."
+
+        note_files = ["hepsi"] + sorted(list(note_finder.notes.keys()))
+
+        with gr.Blocks() as demo:
+            gr.Markdown("# Notlarını Bul")
+            gr.Markdown("## Soru Sorarak Notlarınızdaki İlgili Bilgilere Ulaşın")
+
+            question_text = gr.inputs.Textbox(lines=1, label="Soru")
+            answer_text = gr.outputs.Textbox(label="Cevap")
+            ask_button = gr.Button(value="Soru Sor", name="ask_question_button")
+            ask_button.click(ask_question, inputs=[question_text], outputs=[answer_text])
+
+            gr.Markdown("## Notları Redis'e Ekle")
+            dropdown = gr.inputs.Dropdown(choices=note_files, label="Not Dosyaları")
+            send_button = gr.Button(label="Redis'e Ekle", name="add_to_redis_button")
+            send_result = gr.outputs.Textbox(label="Sonuç")
+            send_button.click(send_to_redis, inputs=[dropdown], outputs=[send_result])
+
+        demo.launch()
+    else:
+        if args.dosya:
+            note_finder.run(args)
+        else:
+            print("Gradio is not installed or not enabled. Please install Gradio and use --gradio flag to enable the interface.")
+            return
 
 if __name__ == "__main__":
     main()
