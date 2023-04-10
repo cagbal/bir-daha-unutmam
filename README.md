@@ -6,6 +6,16 @@ Bir-Daha-Unutmam, notlarınızı kategorize etmenize yardımcı olan, OpenAI Cha
 
 ![Demo](resimler/demo.gif)
 
+# Arayüz 
+
+![Arayüz](resimler/arayuz.png)
+
+Eğer programı böyle başlatırsanız, güzel bir arayüz ile birlikte çalışır.
+
+```bash
+python app.py --gradio
+```
+
 ## Önemli Uyarı
 
 OpenAI API'si ücretlidir ve kullanım sınırlamaları vardır. Uygulamayı kullanırken OpenAI API kullanımınızı dikkatlice izleyin ve maliyetlerin farkında olun. Daha fazla bilgi için [OpenAI fiyatlandırma sayfasını](https://openai.com/pricing) ziyaret edin.
